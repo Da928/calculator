@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Compute;
 
 namespace Calculate
 {
@@ -159,7 +160,7 @@ namespace Calculate
             {
                 Result_Window.Font = new Font("Times New Roman", 48F, FontStyle.Bold, GraphicsUnit.Point, 204);
             }
-
+            
         }
 
         private void BackspaceBTN_Click(object sender, EventArgs e)
@@ -192,6 +193,11 @@ namespace Calculate
             }
             
             
+        }
+
+        private void ResultBTN_Click(object sender, EventArgs e)
+        {
+            Result_Window.Text = Formula.Calculatetext(Result_Window.Text);
         }
     }
 }

@@ -279,6 +279,7 @@
             this.ResultBTN.TabIndex = 19;
             this.ResultBTN.Text = "=";
             this.ResultBTN.UseVisualStyleBackColor = true;
+            this.ResultBTN.Click += new System.EventHandler(this.ResultBTN_Click);
             // 
             // MinusBTN
             // 
