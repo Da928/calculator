@@ -197,7 +197,16 @@ namespace Calculate
 
         private void ResultBTN_Click(object sender, EventArgs e)
         {
-            Result_Window.Text = Formula.Calculatetext(Result_Window.Text);
+            int repOpen = Result_Window.Text.Length - Result_Window.Text.Replace("(", "").Length;
+            int repClose = Result_Window.Text.Length - Result_Window.Text.Replace(")", "").Length;
+            if (repOpen > repClose)
+            {
+                MessageBox.Show("Количество открытых скобок превышает количество закрытых скобок");
+            }
+            else 
+            { 
+                Result_Window.Text = Formula.Calculatetext(Result_Window.Text); 
+            }
         }
     }
 }

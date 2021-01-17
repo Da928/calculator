@@ -336,13 +336,13 @@
             this.Result_Window.AcceptsReturn = true;
             this.Result_Window.AcceptsTab = true;
             this.Result_Window.AllowDrop = true;
-            this.Result_Window.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.Result_Window.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.Result_Window.Font = new System.Drawing.Font("Times New Roman", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Result_Window.Location = new System.Drawing.Point(6, 3);
+            this.Result_Window.Location = new System.Drawing.Point(3, 3);
             this.Result_Window.Multiline = true;
             this.Result_Window.Name = "Result_Window";
             this.Result_Window.ReadOnly = true;
-            this.Result_Window.Size = new System.Drawing.Size(453, 112);
+            this.Result_Window.Size = new System.Drawing.Size(460, 112);
             this.Result_Window.TabIndex = 1;
             this.Result_Window.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Result_Window.TextChanged += new System.EventHandler(this.Result_Window_TextChanged);

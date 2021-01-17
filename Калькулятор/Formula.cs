@@ -3,149 +3,82 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Compute
 {
     class Formula
     {
-        static private bool IsDelimeter(char c)
+        static private byte getPrioritet (char p)
         {
-            if ((" ".IndexOf(c) != -1))
-                return true;
-            return false;
-        }
-
-        static private bool IsOperator(char с)
-        {
-            if (("+-/*()".IndexOf(с) != -1))
-                return true;
-            return false;
-        }
-
-        static private byte GetPriority(char s)
-        {
-            switch (s)
+            switch (p)
             {
-                case '(': return 0;
-                case ')': return 1;
-                case '+': return 2;
-                case '-': return 3;
-                case '*': return 4;
-                case '/': return 4;
-                default: return 5;
+                case '+': return 1;
+                case '-': return 1;
+                case '*': return 2;
+                case '/': return 2;
+                default: return 3;
             }
         }
-
         //"Входной" метод класса
         static public string Calculatetext(string input)
         {
-            string output = GetExpression(input); //Преобразовываем выражение в постфиксную запись
-            double result = Counting(output);
-            string resultstring = Convert.ToString(result);//Решаем полученное выражение
-            return resultstring; //Возвращаем результат
-        }
+            ArrayList output = postfiksForm(input); //Преобразовываем выражение в постфиксную запись
+           // double result = Counting(output);
+            //string resultstring = Convert.ToString(result);//Решаем полученное выражение
+            string stroka = Convert.ToString(output);
+            return stroka; //Возвращаем результат
+        } 
 
-        static private string GetExpression(string input)
+        static private ArrayList postfiksForm(string input)
         {
-            string output = string.Empty; //Строка для хранения выражения
-            Stack<char> openStack = new Stack<char>(); //Стек для хранения операторов
+            ArrayList output = new ArrayList();
+            Stack<string> openStack = new Stack<string>();
+            ArrayList list = new ArrayList(input.Split(' '));
 
-            for (int i = 0; i < input.Length; i++) //Для каждого символа во входной строке
+            foreach (string element in list)
             {
-                //Разделители пропускаем
-                if (IsDelimeter(input[i]))
-                    continue; //Переходим к следующему символу
+                char e = element[0];
 
-                //Если символ - цифра, то считываем все число
-                if (Char.IsDigit(input[i])) //Если цифра
+                if (e > 1 || e >= '0' && e <= '9')
                 {
-                    //Читаем до разделителя или оператора, что бы получить число
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
-                    {
-                        output += input[i]; //Добавляем каждую цифру числа к нашей строке
-                        i++; //Переходим к следующему символу
-
-                        if (i == input.Length) break; //Если символ - последний, то выходим из цикла
-                    }
-
-                    output += " "; //Дописываем после числа пробел в строку с выражением
-                    i--; //Возвращаемся на один символ назад, к символу перед разделителем
+                    output.Add(element);
                 }
-
-                //Если символ - оператор
-                if (IsOperator(input[i])) //Если оператор
+                else if (e == '(') 
                 {
-                    if (input[i] == '(') //Если символ - открывающая скобка
-                        openStack.Push(input[i]); //Записываем её в стек
-                    else if (input[i] == ')') //Если символ - закрывающая скобка
-                    {
-                        //Выписываем все операторы до открывающей скобки в строку
-                        char s = openStack.Pop();
+                    openStack.Push(element);
+                }
+                else if (e == ')')
+                {
+                    string s = openStack.Pop();
 
-                        while (s != '(')
-                        {
-                            output += s.ToString() + ' ';
-                            s = openStack.Pop();
-                        }
+                    while (s[0] != '(')
+                    {
+                        output.Add(s);
+                        s = openStack.Pop();
                     }
-                    else //Если любой другой оператор
+                }
+                if (e == '+' || e == '-' || e == '*' || e == '/') 
+                {
+                    if (openStack.Count == 0)
                     {
-                        if (openStack.Count > 0) //Если в стеке есть элементы
-                            if (GetPriority(input[i]) <= GetPriority(openStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
-                                output += openStack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
-
-                        openStack.Push(char.Parse(input[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+                        openStack.Push(element);
+                    }
+                    else if (getPrioritet(e) <= getPrioritet(openStack.Peek()[0]))
+                    {
+                        output.Add(openStack.Pop()); //там вот есть условие что мы  выталкиваем верхний элемент стека в выходную строку, я так понял это должны быть операторы. 
+                        // Но я не найду в коде, как они вообще попадают в стек  
 
                     }
                 }
+
             }
 
-            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (openStack.Count > 0)
-                output += openStack.Pop() + " ";
-
-            return output; //Возвращаем выражение в постфиксной записи
+                output.Add(openStack.Pop());
+            
+            return output;
         }
 
-        static private double Counting(string input)
-        {
-            double result = 0; //Результат
-            Stack<double> temp = new Stack<double>(); //Dhtvtyysq стек для решения
-
-            for (int i = 0; i < input.Length; i++) //Для каждого символа в строке
-            {
-                //Если символ - цифра, то читаем все число и записываем на вершину стека
-                if (Char.IsDigit(input[i]))
-                {
-                    string a = string.Empty;
-
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
-                    {
-                        a += input[i]; //Добавляем
-                        i++;
-                        if (i == input.Length) break;
-                    }
-                    temp.Push(double.Parse(a)); //Записываем в стек
-                    i--;
-                }
-                else if (IsOperator(input[i])) //Если символ - оператор
-                {
-                    //Берем два последних значения из стека
-                    double a = temp.Pop();
-                    double b = temp.Pop();
-
-                    switch (input[i]) //И производим над ними действие, согласно оператору
-                    {
-                        case '+': result = b + a; break;
-                        case '-': result = b - a; break;
-                        case '*': result = b * a; break;
-                        case '/': result = b / a; break;
-                        case '^': result = double.Parse(Math.Pow(double.Parse(b.ToString()), double.Parse(a.ToString())).ToString()); break;
-                    }
-                    temp.Push(result); //Результат вычисления записываем обратно в стек
-                }
-            }
-            return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
-        }
     }
 }
