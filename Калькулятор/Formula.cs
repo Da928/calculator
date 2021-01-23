@@ -26,7 +26,11 @@ namespace Compute
             ArrayList output = postfiksForm(input); //Преобразовываем выражение в постфиксную запись
            // double result = Counting(output);
             //string resultstring = Convert.ToString(result);//Решаем полученное выражение
-            string stroka = Convert.ToString(output);
+            string stroka = "";
+            foreach (string item in output)
+            {
+                stroka += item;
+            }
             return stroka; //Возвращаем результат
         } 
 
@@ -35,12 +39,13 @@ namespace Compute
             ArrayList output = new ArrayList();
             Stack<string> openStack = new Stack<string>();
             ArrayList list = new ArrayList(input.Split(' '));
+            ArrayList operant = new ArrayList(new char[] { '+', '-', '/', '*' });
 
             foreach (string element in list)
             {
                 char e = element[0];
 
-                if (e > 1 || e >= '0' && e <= '9')
+                if (e >= '0' && e <= '9')
                 {
                     output.Add(element);
                 }
@@ -58,20 +63,14 @@ namespace Compute
                         s = openStack.Pop();
                     }
                 }
-                if (e == '+' || e == '-' || e == '*' || e == '/') 
+                if (operant.Contains(e))//(e == '+' || e == '-' || e == '*' || e == '/') 
                 {
-                    if (openStack.Count == 0)
+                    while (openStack.Count != 0 && operant.Contains(openStack.Peek()[0]) && getPrioritet(e) <= getPrioritet(openStack.Peek()[0]))
                     {
-                        openStack.Push(element);
-                    }
-                    else if (getPrioritet(e) <= getPrioritet(openStack.Peek()[0]))
-                    {
-                        output.Add(openStack.Pop()); //там вот есть условие что мы  выталкиваем верхний элемент стека в выходную строку, я так понял это должны быть операторы. 
-                        // Но я не найду в коде, как они вообще попадают в стек  
-
-                    }
+                        output.Add(openStack.Pop());
+                    }                                               
+                    openStack.Push(element);
                 }
-
             }
 
             while (openStack.Count > 0)
