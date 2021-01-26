@@ -24,14 +24,13 @@ namespace Compute
         static public string Calculatetext(string input)
         {
             ArrayList output = postfiksForm(input); //Преобразовываем выражение в постфиксную запись
-           // double result = Counting(output);
-            //string resultstring = Convert.ToString(result);//Решаем полученное выражение
-            string stroka = "";
+            double result = polishResult(output);
+           /* string stroka = "";
             foreach (string item in output)
             {
                 stroka += item;
-            }
-            return stroka; //Возвращаем результат
+            }*/
+            return Convert.ToString(result); //Возвращаем результат
         } 
 
         static private ArrayList postfiksForm(string input)
@@ -79,5 +78,53 @@ namespace Compute
             return output;
         }
 
+        static private double polishResult (ArrayList output)
+        {
+         
+            Stack<double> chislo = new Stack<double>();
+
+            foreach (string znachenie in output)
+            {
+                char z = znachenie[0];
+                
+                if (z >= '0' && z <= '9')
+                {
+                    chislo.Push(Convert.ToDouble(znachenie));
+                }
+                else
+                {
+                    double b = chislo.Pop();
+                    double a = chislo.Pop();
+                    char operant = znachenie[0];
+                        
+                    double c = calcOperation(b, a, operant);
+
+                    chislo.Push(c);                
+                }
+                
+
+            }
+            double result = chislo.Pop();
+
+            return result;
+
+        }
+
+        static private double calcOperation(double b, double a, char operant)
+        {
+           
+                switch (operant)
+                {
+                    case '+': return a + b;
+                    case '-': return a - b;
+                    case '*': return a * b;
+                    case '/': return a / b;
+                }
+            
+                throw new Exception("некорректное выражение");
+            
+            
+            
+        }
     }
 }
